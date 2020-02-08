@@ -1,0 +1,32 @@
+{
+    "name": "On Link",
+    "short_name": "onLink",
+    "version": "1.0",
+    "author": "Muhammad Hamoly",
+    "manifest_version": 2,
+    "offline_enabled": true,
+    "description": "On Link is a revolutionary link shortner",
+    "icons": { "32": "favicon-32x32.png"},
+    "permissions": [
+        "<all_urls>",
+        "tabs",
+        "unlimitedStorage",
+        "webNavigation"
+      ],
+    "browser_action": {
+        "default_icon": {
+          "32": "favicon-32x32.png"
+        },
+        "default_title": "On Link",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["./content.js"]
+        }
+    ],
+    "background":{
+        "scripts": ["background.js"]
+    }
+}
