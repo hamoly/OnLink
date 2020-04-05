@@ -4,14 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Document</title>
 </head>
 <body>
-  <h1>welcome</h1>
-  Project name: <input type="text" name="project" id="project"><br>
-  Link: <input type="text" name="link" id="link"><br>
-  <button id="addLink">Submit</button>
-  <h1 id="success" class="success"></h1>
+  <div class="container" id="container">
+    <div class="logo">
+      <img src="logo.jpg">
+      <p>OnLink</p>
+    </div>
+    <div class="error display" id="dbError">Please fill in inputs below</div>
+    <form class="form" id="newLinkForm">
+      <h2 id="ho">Add new link</h2>
+      <input type="text" name="project" id="project" placeholder="Project Name" autofocus required>
+      <div class="warning display" id="projectNameExists">Project name already exists</div>
+      <input type="text" name="link" id="link" placeholder="Original Link" required>
+      <div class="success display" id="succsed">Link added successfully<br></div>
+      <button id="addLink">Submit</button>
+    </form>
+  </div>
+  <a href="#" class="link">Manage Links</a>
   <script src="content.js"></script>
 </body>
 </html>

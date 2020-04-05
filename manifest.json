@@ -18,7 +18,7 @@
           "32": "favicon-32x32.png"
         },
         "default_title": "On Link",
-        "default_popup": "popup.html"
+        "default_popup": "./popup.html"
     },
     "content_scripts": [
         {
@@ -27,6 +27,15 @@
         }
     ],
     "background":{
-        "scripts": ["background.js"]
-    }
+        "scripts": ["./background.js"]
+    },
+    "omnibox": { "keyword" : "o" },
+    "commands": {
+        "_execute_browser_action": {
+          "suggested_key": {
+            "default": "Ctrl+Shift+O",
+            "mac": "Command+Shift+O"
+          }
+        }
+      }
 }
