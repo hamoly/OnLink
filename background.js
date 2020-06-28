@@ -83,7 +83,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(tab => {
   // saving tab.url
   tolink = tab.url
   // fire getLinkfromDB if tab url contains onlink/*
-  if (/o\/(.)/gi.test(tolink)) {
+  if (/on\/(.)/gi.test(tolink)) {
     getLinkfromDB(tolink);
   } else {
     console.log('nay');
@@ -91,7 +91,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(tab => {
 });
 // fetching link and redirect if found
 const getLinkfromDB = bekh => {
-  let tolink = bekh.replace(/([^\s]+):\/+o\//ig, "");
+  let tolink = bekh.replace(/([^\s]+):\/+on\//ig, "");
   console.log(bekh)
   console.log(tolink)
   // Openning a read only db transaction, ready for fetching data
