@@ -56,7 +56,7 @@ port.onMessage.addListener(m => {
       break;
     case 'linkAddedSuccessfully':
       document.getElementById('succsed').classList.remove('display');
-      document.getElementById('succsed').insertAdjacentHTML('afterend', `<a href='#' class='success'>http://o/${ projectName }</a>`);
+      document.getElementById('succsed').insertAdjacentHTML('afterend', `<a href='http://o/${ projectName }' target="_blank" class='success'>${ projectName }</a>`);
       document.getElementById('project').value = '';
       break;
     default:
