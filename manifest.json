@@ -38,7 +38,7 @@
     ]
   },
   "omnibox": {
-    "keyword": "o"
+    "keyword": "*://o/*"
   },
   "commands": {
     "_execute_browser_action": {

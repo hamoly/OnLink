@@ -45,7 +45,7 @@ chrome.runtime.onConnect.addListener(port => {
 // Add new link object
 const addNewLinkObj = msg => {
   // Forming new link object and saving it to "newLink" variable
-  let newLink = ({ key: `http://o/${ msg.projectName }`, link: msg.originalLink });
+  let newLink = ({ key: `${ msg.projectName }`, link: msg.originalLink });
   // Openning a read/write db transaction, ready for adding the data
   let transactionRW = db.transaction(['shortenlink'], 'readwrite').objectStore('shortenlink');
   // Make a request to add new link object to the object store
@@ -58,7 +58,7 @@ const addNewLinkObj = msg => {
 
 // check if entered project name already exists in DB
 const projectNameVerify = msg => {
-  let projectName = (`http://o/${ msg.projectName }`);
+  let projectName = (`${ msg.projectName }`);
   console.log(projectName);
   // Openning a read only db transaction, ready for fetching data
   let transactionRO = db.transaction(['shortenlink'], 'readonly').objectStore('shortenlink');
@@ -90,37 +90,30 @@ chrome.webNavigation.onBeforeNavigate.addListener(tab => {
   }
 });
 // fetching link and redirect if found
-const getLinkfromDB = tolink => {
+const getLinkfromDB = bekh => {
+  let tolink = bekh.replace(/([^\s]+):\/+o\//ig, "");
+  console.log(bekh)
+  console.log(tolink)
   // Openning a read only db transaction, ready for fetching data
   let transactionRO = db.transaction(['shortenlink'], 'readonly').objectStore('shortenlink');
   // Fetching original link request
-  let linkValueRequest = transactionRO.get(tolink);
+  let linkValueRequest = transactionRO.get(`${ tolink }`);
   // Fetching original request link successed
   linkValueRequest.onsuccess = () => {
     // saving the link value from the result of transaction
-    let linkValue = linkValueRequest.result.link
-    // updating tab url by the link value fo DB
-    chrome.tabs.update(tabid, { url: linkValue });
+    if (linkValueRequest.result) {
+      let linkValue = linkValueRequest.result.link
+      // updating tab url by the link value fo DB
+      chrome.tabs.update(tabid, { url: linkValue });
+      console.log(linkValueRequest.result.link)
+    } else {
+      chrome.tabs.update(tabid, { url: '404.html' });
+    }
   };
   linkValueRequest.onerror = err => console.log(err);
 };
 
-/*
-chrome.omnibox.onInputChanged.addListener(
-  function(text, suggest) {
-    console.log('inputChanged: ' + text);
-    suggest([
-      {content: text + " one", description: "the first one"},
-      {content: text + " number two", description: "the second entry"}
-    ]);
-  });
-
-// This event is fired with the user accepts the input in the omnibox.
-chrome.omnibox.onInputEntered.addListener(
-  function(text) {
-    console.log('inputEntered: ' + text);
-    alert('You just typed "' + text + '"');
-  });
-*/
-
-chrome.omnibox.onInputEntered.addListener(tolink => getLinkfromDB(`http://o/${ tolink }`));
+function bekh(requestURL) {
+  getLinkfromDB(`${ requestURL }`)
+}
+chrome.omnibox.onInputEntered.addListener(requestURL => bekh(requestURL));
