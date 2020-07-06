@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: content.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: content.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>if (document.title === "OnLink") {
+  let state, originalLink, projectName;
+
+
+
+  // Defining a port to exchange messages between content "content.js" and background script "background.js"
+
+  const port = chrome.runtime.connect({ name: 'newLink' });
+
+  // check if project name already exists in database
+  /**
+   * @constructor kerker
+   * @description gets project input value at input
+   */
+  document.getElementById('project').addEventListener('input', function projectNameVerifyInit() {
+    projectName = document.getElementById('project').value;
+    if (projectName !== '') {
+      let type = 'verify';
+      sendMessage(projectName, originalLink, type);
+    }
+  });
+
+  // retrieving and storing new link panel values to variables
+  /**
+   * @constructor mermer
+   * @description listens to submit button and send message to the background
+   */
+  document.getElementById('addLink').addEventListener('click', function getNewLinkAttrInit() {
+    let type = 'add';
+    sendMessage(projectName, originalLink, type);
+  });
+
+  // sends new link values as an object to background script "background.js"
+  /**
+   * @description sends new link values as an object to background script "background.js"
+   * @param {string} projectName - project name
+   * @param {string} originalLink - the link will be shorten
+   * @param {string} type - type of message Add/verify
+   */
+  const sendMessage = (projectName, originalLink, type) =>
+    port.postMessage({ projectName: projectName, originalLink: originalLink, type: type });
+
+
+  /**
+   * @description Disables submit button at the popup page "popup.html"
+   */
+  const disableAddButton = () => document.getElementById('addLink').disabled = true;
+
+  /**
+   * @description Enables submit button at the popup page "popup.html"
+   */
+  const enableAddButton = () => document.getElementById('addLink').disabled = false;
+
+  /**
+   * @constructor onMessage
+   * @description Recieve messages from the background script "background.js"
+   */
+  port.onMessage.addListener(m => {
+
+    // active tab url
+    originalLink = m.taburl
+
+    // project name verification response
+    state = m.state;
+
+    // gets the active tab url and assiging it to the link input value of adding new link panel
+    document.getElementById('link').value = originalLink;
+
+    switch (state) {
+      case 'projectNameExist':
+        document.getElementById('projectNameExists').classList.remove('display');
+        disableAddButton();
+        break;
+      case 'projectNameDoesnotExist':
+        document.getElementById('projectNameExists').classList.add('display');
+        enableAddButton();
+        break;
+      case 'dbError':
+        document.getElementById('dbError').classList.remove('display');
+        disableAddButton();
+        break;
+      case 'linkAddedSuccessfully':
+        document.getElementById('succsed').classList.remove('display');
+        document.getElementById('succsed').insertAdjacentHTML('afterend', `&lt;a href='http://on/${ projectName }' target="_blank" class='success'>${ projectName }&lt;/a>`);
+        document.getElementById('project').value = '';
+        break;
+      default:
+        disableAddButton();
+    }
+  })
+
+  var form = document.getElementById("newLinkForm");
+  function handleForm(event) { event.preventDefault(); }
+  form.addEventListener('submit', handleForm);
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="kerker.html">kerker</a></li><li><a href="mermer.html">mermer</a></li><li><a href="onBeforeNavigate.html">onBeforeNavigate</a></li><li><a href="onConnect.html">onConnect</a></li><li><a href="onInputEntered.html">onInputEntered</a></li><li><a href="onMessage.html">onMessage</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addNewLinkObj">addNewLinkObj</a></li><li><a href="global.html#bekh">bekh</a></li><li><a href="global.html#db">db</a></li><li><a href="global.html#dbOpenRequest">dbOpenRequest</a></li><li><a href="global.html#disableAddButton">disableAddButton</a></li><li><a href="global.html#enableAddButton">enableAddButton</a></li><li><a href="global.html#getLinkfromDB">getLinkfromDB</a></li><li><a href="global.html#projectNameVerify">projectNameVerify</a></li><li><a href="global.html#sendMessage">sendMessage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Jun 28 2020 08:04:31 GMT+0200 (Eastern European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
