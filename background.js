@@ -1,24 +1,44 @@
-var db, tabid, msgPort;
-////////
-// INDEXEDDB
-// Create indexedDB Request if not found
+/**
+ * Global variables encapsulated in background
+ * @param {string} db - for database
+ * @param {number} tabid - the current tab id
+ * @param {number} msgPort - the message port between content and background
+ */
+let db, tabid, msgPort;
+/**
+ * Creating indexeddb database
+ * @param {string} onlinks - the name of the database
+ * @param {number} 2 - version of the database.
+ */
 let dbOpenRequest = indexedDB.open('onlinks', 2);
-// Create objectstore if not found
+
+/**
+ * Creating object store on the database
+ * @param {string} e - the event of creating the database
+ */
 dbOpenRequest.onupgradeneeded = e => {
   // saving opened DB to "db" variable
   db = e.target.result;
   // Creating objectStore on this database
   db.createObjectStore('shortenlink', { keyPath: 'key' });
 };
-// Indexeddb Created Successfully
-// saving created DB to "db" variable
+
+/**
+ * saving indexeddb database result
+ * @param {string} e - the event of creating database
+ */
 dbOpenRequest.onsuccess = e => db = e.target.result;
-// Indexeddb creating request error
+/**
+ * catshing errors from creating indexeddb Database
+ * @param {string} e - the event of creating database
+ */
 dbOpenRequest.onerror = e => console.log(e.target.error);
 
-////////
-// NEW LINK
-// Lestining to messages from popup script
+/**
+ * init message passing
+ * @constructor onConnect
+ * @param {number} port - port number for message passing
+ */
 chrome.runtime.onConnect.addListener(port => {
   // saving port result to use it later
   msgPort = port;
@@ -42,9 +62,15 @@ chrome.runtime.onConnect.addListener(port => {
   })
 });
 
-// Add new link object
+/**
+ * Adds link object to the database
+ * @param msg - an object contains projectName and originalLink
+ */
 const addNewLinkObj = msg => {
-  // Forming new link object and saving it to "newLink" variable
+  /**
+   * new link object
+   * @type {{key: string, link: string}}
+   */
   let newLink = ({ key: `${ msg.projectName }`, link: msg.originalLink });
   // Openning a read/write db transaction, ready for adding the data
   let transactionRW = db.transaction(['shortenlink'], 'readwrite').objectStore('shortenlink');
@@ -56,7 +82,10 @@ const addNewLinkObj = msg => {
   addNewLinkReq.onerror = () => msgPort.postMessage({ taburl: activeTabURL, state: 'dbError' });
 }
 
-// check if entered project name already exists in DB
+/**
+ * checks if entered project name already exists in DB
+ * @param {string} msg - contains project name
+ */
 const projectNameVerify = msg => {
   let projectName = (`${ msg.projectName }`);
   console.log(projectName);
@@ -74,9 +103,12 @@ const projectNameVerify = msg => {
   }
   linkValueRequest.onerror = () => msgPort.postMessage({ taburl: activeTabURL, state: 'dbError' });
 };
-////////
-// REDIRECTING REQUESTED LINK
-// Fetching tab url and id before navigation and fire getLinkfromDB if it contains onlink/*
+
+/**
+ * @constructor onBeforeNavigate
+ * @description Fetching tab url and id before navigation and fire getLinkfromDB if it contains onlink
+ * @param {string} tab -Tab information
+ */
 chrome.webNavigation.onBeforeNavigate.addListener(tab => {
   // saving tab.id
   tabid = tab.id
@@ -89,7 +121,11 @@ chrome.webNavigation.onBeforeNavigate.addListener(tab => {
     console.log('nay');
   }
 });
-// fetching link and redirect if found
+
+/**
+ * Fetch Link from DB
+ * @param {string} bekh - url
+ */
 const getLinkfromDB = bekh => {
   let tolink = bekh.replace(/([^\s]+):\/+on\//ig, "");
   console.log(bekh)
@@ -112,8 +148,16 @@ const getLinkfromDB = bekh => {
   };
   linkValueRequest.onerror = err => console.log(err);
 };
-
+/**
+ * @description trigers getLinkfromDB with the requestURL
+ * @param {string} requestURL - url
+ */
 function bekh(requestURL) {
   getLinkfromDB(`${ requestURL }`)
 }
+/**
+ * @constructor onInputEntered
+ * @description Listens to the omni box input
+ * @param {string} requestURL - url
+ */
 chrome.omnibox.onInputEntered.addListener(requestURL => bekh(requestURL));

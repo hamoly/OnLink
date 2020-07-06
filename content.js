@@ -8,6 +8,10 @@ if (document.title === "OnLink") {
   const port = chrome.runtime.connect({ name: 'newLink' });
 
   // check if project name already exists in database
+  /**
+   * @constructor kerker
+   * @description gets project input value at input
+   */
   document.getElementById('project').addEventListener('input', function projectNameVerifyInit() {
     projectName = document.getElementById('project').value;
     if (projectName !== '') {
@@ -17,23 +21,40 @@ if (document.title === "OnLink") {
   });
 
   // retrieving and storing new link panel values to variables
+  /**
+   * @constructor mermer
+   * @description listens to submit button and send message to the background
+   */
   document.getElementById('addLink').addEventListener('click', function getNewLinkAttrInit() {
     let type = 'add';
     sendMessage(projectName, originalLink, type);
   });
 
   // sends new link values as an object to background script "background.js"
+  /**
+   * @description sends new link values as an object to background script "background.js"
+   * @param {string} projectName - project name
+   * @param {string} originalLink - the link will be shorten
+   * @param {string} type - type of message Add/verify
+   */
   const sendMessage = (projectName, originalLink, type) =>
     port.postMessage({ projectName: projectName, originalLink: originalLink, type: type });
 
 
-  // Disable add new link button at the popup page "popup.html"
+  /**
+   * @description Disables submit button at the popup page "popup.html"
+   */
   const disableAddButton = () => document.getElementById('addLink').disabled = true;
 
-  // Enable add new link button at the popup page "popup.html"
+  /**
+   * @description Enables submit button at the popup page "popup.html"
+   */
   const enableAddButton = () => document.getElementById('addLink').disabled = false;
 
-  // Recieve messages from the background script "background.js"
+  /**
+   * @constructor onMessage
+   * @description Recieves messages from the background script "background.js"
+   */
   port.onMessage.addListener(m => {
 
     // active tab url
