@@ -1,0 +1,23 @@
+{
+  "name": "OnLink",
+  "version": "1.0.0",
+  "description": "OnLink is a Chrome Extensions allows you to manage and create shorten links by project name. It uses IndexedDB to store data.",
+  "main": "background.js",
+  "scripts": {
+    "doc": "jsdoc -c jsdoc.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamoly/OnLink.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hamoly/OnLink/issues"
+  },
+  "homepage": "https://github.com/hamoly/OnLink#readme",
+  "dependencies": {
+    "jsdoc": "^3.6.4"
+  }
+}
