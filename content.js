@@ -7,10 +7,14 @@ if (document.title === "OnLink") {
 
   const port = chrome.runtime.connect({ name: 'newLink' });
 
-  // check if project name already exists in database
   /**
-   * @constructor kerker
-   * @description gets project input value at input
+   * check if project name already exists in database
+   * @description returns project input value
+   * @sendMessage send message to background.js with project and original link values to verify
+   * @param {string} projectName
+   * @param {string} originalLink
+   * @param {string} type - Verify/add
+   * @returns {void}
    */
   document.getElementById('project').addEventListener('input', function projectNameVerifyInit() {
     projectName = document.getElementById('project').value;
